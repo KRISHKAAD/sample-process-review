@@ -136,7 +136,14 @@ body.view-list .diagram-wrap{display:none}
 /* send */
 .send{max-width:760px;display:grid;gap:14px}
 .send-actions{display:flex;flex-wrap:wrap;gap:10px}
-.send-actions .btn[aria-disabled="true"]{opacity:.5;pointer-events:none}
+.sendstep{display:grid;gap:10px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.sendstep h3{margin:0;font-size:15px;font-weight:600;display:flex;align-items:center;gap:10px}
+.sendstep .num{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--on-solid);font-size:13px;font-weight:600}
+.send input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:10px 12px;min-height:44px;font-size:16px}
+details.more{border:1px solid var(--line);border-radius:12px;padding:12px 16px;background:var(--surface)}
+details.more>summary{cursor:pointer;font-weight:500;min-height:28px}
+details.more[open]>summary{margin-bottom:8px}
+details.more>*+*{margin-top:10px}
 .status{min-height:22px;font-size:13.5px;color:var(--muted)}
 .warn{color:var(--chg)}
 #out{min-height:260px;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
@@ -203,7 +210,7 @@ body.nomic .langrow{display:none}
     <div class="top-row">
       <div class="brand"><b>Sample process review</b><span>Draft v0.2, from Krish</span></div>
       <span class="count" id="count">Nothing reviewed yet</span>
-      <a class="btn primary" href="#send">Send comments</a>
+      <a class="btn primary" href="#send">Save and send</a>
     </div>
     <nav class="nav" id="nav" aria-label="Sections">
       <a href="#journey">Journey</a>
@@ -220,7 +227,7 @@ body.nomic .langrow{display:none}
 <main class="wrap">
   <div class="intro">
     <h1>Is this how the sample process really works?</h1>
-    <p>This is the sample process as we understood it from our conversations. Please correct anything that is wrong. Tap a box to mark it right or note a change, or just talk in the box below. Your answers stay on this device, and one button sends them to me at the end.</p>
+    <p>This is the sample process as we understood it from our conversations. Please correct anything that is wrong. Tap a box to mark it right or note a change, or just talk in the box below. Your answers stay on this device. At the end you save them as a PDF and email it to me.</p>
     <div class="how"><span><i class="sw"></i>Described in our conversations</span><span><i class="sw guess"></i>Our guess, please check</span></div>
     <div class="quick" id="quick">
       <h2>Short on time? Just talk.</h2>
@@ -322,19 +329,36 @@ body.nomic .langrow{display:none}
 
   <section id="send">
     <div class="eyebrow" style="color:var(--s6)">Last step</div>
-    <h2>Send your comments</h2>
+    <h2>Save and send your review</h2>
     <div class="send">
-      <p class="cap">Everything you marked, typed or said is collected below, including what you said at the top of the page. Send it to Krish. You choose the contact in WhatsApp or your email app.</p>
-      <label class="lab" for="out">Your message</label>
-      <textarea id="out" rows="14" spellcheck="false"></textarea>
-      <div class="send-actions">
-        <button type="button" class="btn primary" id="b-share" hidden>Share</button>
-        <a class="btn primary" id="b-wa" target="_blank" rel="noopener" href="#send">Send by WhatsApp</a>
-        <a class="btn" id="b-mail" target="_blank" rel="noopener" href="#send">Send by email</a>
-        <button type="button" class="btn" id="b-copy">Copy message</button>
-        <button type="button" class="btn" id="b-refresh">Rebuild from my answers</button>
+      <p class="cap">Everything you marked, typed or said is collected into one PDF, including what you said at the top of the page. Save the PDF, then attach it to an email to Krish. Nothing is sent from this page.</p>
+      <div class="sendstep">
+        <label class="lab" for="nm">Your name (shown on the PDF, optional)</label>
+        <input id="nm" type="text" autocomplete="name" placeholder="Your name">
+      </div>
+      <div class="sendstep">
+        <h3><span class="num">1</span>Save the PDF</h3>
+        <div class="send-actions">
+          <button type="button" class="btn primary" id="b-pdf">Save PDF</button>
+          <button type="button" class="btn primary" id="b-share" hidden>Share PDF (choose Mail)</button>
+        </div>
+      </div>
+      <div class="sendstep">
+        <h3><span class="num">2</span>Email it to Krish</h3>
+        <p class="cap" style="margin:0">Your email app opens with a short message. Attach the PDF you just saved, add Krish's address and send.</p>
+        <div class="send-actions"><a class="btn" id="b-mail" href="#send">Open email</a></div>
       </div>
       <p class="status" id="status" role="status" aria-live="polite"></p>
+      <p class="cap" style="margin:0">If the PDF does not save, open this page in Chrome or Safari and try again, or use Copy text below and paste it into your email.</p>
+      <details class="more">
+        <summary>See or copy the text version</summary>
+        <label class="lab" for="out">Your message</label>
+        <textarea id="out" rows="14" spellcheck="false"></textarea>
+        <div class="send-actions">
+          <button type="button" class="btn" id="b-copy">Copy text</button>
+          <button type="button" class="btn" id="b-refresh">Rebuild from my answers</button>
+        </div>
+      </details>
       <div><button type="button" class="btn" id="b-clear">Clear everything on this device</button></div>
     </div>
   </section>
@@ -359,7 +383,7 @@ body.nomic .langrow{display:none}
 'use strict';
 var DATA = {"spots":[{"id":"p1-1","page":1,"lane":0,"stage":0,"step":null,"heard":true,"kind":"cell","text":"Picks the style and fabric and sends the request. Later decides where the fabric suits.","pct":{"left":9.45,"top":17.05,"width":13.81,"height":15.0}},{"id":"p1-2","page":1,"lane":0,"stage":1,"step":null,"heard":true,"kind":"cell","text":"Sends references and publishes the style on its board. The block pattern sits in its PLM. Measurement charts are often missing.","pct":{"left":24.52,"top":17.05,"width":13.81,"height":15.0}},{"id":"p1-3","page":1,"lane":0,"stage":2,"step":null,"heard":true,"kind":"cell","text":"Designers and developers review the sample and ask for changes, often several at once. 3D rendering may come in (unclear).","pct":{"left":39.59,"top":17.05,"width":13.81,"height":15.0}},{"id":"p1-4","page":1,"lane":0,"stage":3,"step":null,"heard":true,"kind":"cell","text":"Provides the applications and colours for the line. Holds its own meetings and selects.","pct":{"left":54.66,"top":17.05,"width":13.81,"height":15.0}},{"id":"p1-5","page":1,"lane":0,"stage":4,"step":null,"heard":true,"kind":"cell","text":"Builds a display and a presentation to choose what to buy. Placement runs at the same time.","pct":{"left":69.73,"top":17.05,"width":13.81,"height":15.0}},{"id":"p1-6","page":1,"lane":0,"stage":5,"step":null,"heard":true,"kind":"cell","text":"Styles missed in LA, or late new styles, come back after selection.","pct":{"left":84.8,"top":17.05,"width":13.81,"height":15.0}},{"id":"p1-7","page":1,"lane":1,"stage":0,"step":null,"heard":true,"kind":"cell","text":"Summarises the request with the team's template and clarifies by mail or Zoom.","pct":{"left":9.45,"top":36.14,"width":13.81,"height":15.0}},{"id":"p1-8","page":1,"lane":1,"stage":1,"step":null,"heard":true,"kind":"cell","text":"Follows the BOM and the board. Secures fabric and trims, raises the sample request and chases the trims.","pct":{"left":24.52,"top":36.14,"width":13.81,"height":15.0}},{"id":"p1-9","page":1,"lane":1,"stage":2,"step":null,"heard":true,"kind":"cell","text":"Joins in person or on Zoom, notes the comments and takes photos. Creates the BOM too (timing to confirm).","pct":{"left":39.59,"top":36.14,"width":13.81,"height":15.0}},{"id":"p1-10","page":1,"lane":1,"stage":3,"step":null,"heard":true,"kind":"cell","text":"Sends comments and photos to the brand. If time is short, uses available fabric and trims, closest colour.","pct":{"left":54.66,"top":36.14,"width":13.81,"height":15.0}},{"id":"p1-11","page":1,"lane":1,"stage":4,"step":null,"heard":true,"kind":"cell","text":"Placement follows the LA meetings. Styles can still arrive while it runs.","pct":{"left":69.73,"top":36.14,"width":13.81,"height":15.0}},{"id":"p1-12","page":1,"lane":1,"stage":5,"step":null,"heard":true,"kind":"cell","text":"The same process again, under placement time pressure: the most critical part.","pct":{"left":84.8,"top":36.14,"width":13.81,"height":15.0}},{"id":"p1-13","page":1,"lane":2,"stage":0,"step":null,"heard":false,"kind":"cell","text":"Makes the sample and checks it internally (to confirm).","pct":{"left":9.45,"top":55.23,"width":13.81,"height":15.0}},{"id":"p1-14","page":1,"lane":2,"stage":1,"step":null,"heard":true,"kind":"cell","text":"Make the pattern from the merchant's information, then a mock sample at once. Final sample when the right fabric arrives.","pct":{"left":24.52,"top":55.23,"width":13.81,"height":15.0}},{"id":"p1-15","page":1,"lane":2,"stage":3,"step":null,"heard":true,"kind":"cell","text":"Make 2 pieces for LA, 1 for critical fit and 4 to 5 for development testing.","pct":{"left":54.66,"top":55.23,"width":13.81,"height":15.0}},{"id":"p1-16","page":1,"lane":2,"stage":5,"step":null,"heard":true,"kind":"cell","text":"Same again: 2 pieces, a development test and the critical fit.","pct":{"left":84.8,"top":55.23,"width":13.81,"height":15.0}},{"id":"p1-17","page":1,"lane":3,"stage":0,"step":null,"heard":false,"kind":"cell","text":"Fabric and supplier samples requested by mail (to confirm).","pct":{"left":9.45,"top":74.32,"width":13.81,"height":15.0}},{"id":"p1-18","page":1,"lane":3,"stage":1,"step":null,"heard":true,"kind":"cell","text":"Fabric and trims arrive. A similar fabric and colour is used until the right ones do.","pct":{"left":24.52,"top":74.32,"width":13.81,"height":15.0}},{"id":"p1-19","page":1,"lane":3,"stage":3,"step":null,"heard":true,"kind":"cell","text":"Trims and thread must match the colour. Delays force the closest colour. The big risk.","pct":{"left":54.66,"top":74.32,"width":13.81,"height":15.0}},{"id":"p2-1","page":2,"lane":0,"stage":null,"step":1,"heard":true,"kind":"box","text":"Sends the request: style and fabric, by board or email","pct":{"left":9.56,"top":9.95,"width":9.83,"height":11.57}},{"id":"p2-2","page":2,"lane":1,"stage":null,"step":2,"heard":true,"kind":"box","text":"Summarises it with the team's template","pct":{"left":20.86,"top":29.4,"width":9.83,"height":11.57}},{"id":"p2-3","page":2,"lane":1,"stage":null,"step":null,"heard":true,"kind":"diamond","text":"Anything missing?","pct":{"left":32.92,"top":29.63,"width":8.31,"height":11.11}},{"id":"p2-4","page":2,"lane":0,"stage":null,"step":null,"heard":true,"kind":"box","text":"Answers by mail or on a Zoom call","pct":{"left":32.16,"top":9.95,"width":9.83,"height":11.57}},{"id":"p2-5","page":2,"lane":3,"stage":null,"step":3,"heard":false,"kind":"box","text":"Requests fabric and samples from suppliers by mail","pct":{"left":43.47,"top":68.29,"width":9.83,"height":11.57}},{"id":"p2-6","page":2,"lane":2,"stage":null,"step":4,"heard":false,"kind":"box","text":"Briefs the pattern makers and tech persons","pct":{"left":43.47,"top":48.84,"width":9.83,"height":11.57}},{"id":"p2-7","page":2,"lane":3,"stage":null,"step":null,"heard":false,"kind":"box","text":"Fabric and samples arrive (a similar fabric if late)","pct":{"left":54.77,"top":68.29,"width":9.83,"height":11.57}},{"id":"p2-8","page":2,"lane":2,"stage":null,"step":5,"heard":false,"kind":"box","text":"Makes the sample in the selected or a similar fabric","pct":{"left":54.77,"top":48.84,"width":9.83,"height":11.57}},{"id":"p2-9","page":2,"lane":2,"stage":null,"step":6,"heard":false,"kind":"diamond","text":"Looks right?","pct":{"left":66.83,"top":49.07,"width":8.31,"height":11.11}},{"id":"p2-10","page":2,"lane":0,"stage":null,"step":7,"heard":true,"kind":"box","text":"Reviews the sample and decides where the fabric suits","pct":{"left":77.38,"top":9.95,"width":9.83,"height":11.57}},{"id":"p2-11","page":2,"lane":1,"stage":null,"step":8,"heard":false,"kind":"box","text":"Records the decision; the fabric carries into the proto sample","pct":{"left":88.68,"top":29.4,"width":9.83,"height":11.57}},{"id":"p3-1","page":3,"lane":0,"stage":null,"step":1,"heard":true,"kind":"box","text":"Sends references and publishes the style details on its board","pct":{"left":9.56,"top":9.95,"width":9.83,"height":11.57}},{"id":"p3-2","page":3,"lane":1,"stage":null,"step":null,"heard":true,"kind":"diamond","text":"New style?","pct":{"left":21.62,"top":29.63,"width":8.31,"height":11.11}},{"id":"p3-3","page":3,"lane":1,"stage":null,"step":2,"heard":true,"kind":"box","text":"Follows the BOM and the board; secures fabric and trims","pct":{"left":32.16,"top":29.4,"width":9.83,"height":11.57}},{"id":"p3-4","page":3,"lane":3,"stage":null,"step":null,"heard":true,"kind":"box","text":"Fabric and trims supplied; a similar fabric and colour if the right ones are late","pct":{"left":32.16,"top":68.29,"width":9.83,"height":11.57}},{"id":"p3-5","page":3,"lane":1,"stage":null,"step":3,"heard":true,"kind":"box","text":"Raises the sample request to the sample room","pct":{"left":43.47,"top":29.4,"width":9.83,"height":11.57}},{"id":"p3-6","page":3,"lane":2,"stage":null,"step":4,"heard":true,"kind":"box","text":"Makes the pattern from the block (in the brand's PLM) or a new one","pct":{"left":43.47,"top":48.84,"width":9.83,"height":11.57}},{"id":"p3-7","page":3,"lane":2,"stage":null,"step":5,"heard":true,"kind":"box","text":"Makes a mock sample at once, in a similar fabric","pct":{"left":54.77,"top":48.84,"width":9.83,"height":11.57}},{"id":"p3-8","page":3,"lane":1,"stage":null,"step":6,"heard":true,"kind":"box","text":"Chases the trims until the sample is complete","pct":{"left":54.77,"top":29.4,"width":9.83,"height":11.57}},{"id":"p3-9","page":3,"lane":1,"stage":null,"step":7,"heard":true,"kind":"diamond","text":"Right fabric here?","pct":{"left":66.83,"top":29.63,"width":8.31,"height":11.11}},{"id":"p3-10","page":3,"lane":1,"stage":null,"step":8,"heard":true,"kind":"box","text":"Evaluates the sample together with the sample team","pct":{"left":77.38,"top":29.4,"width":9.83,"height":11.57}},{"id":"p3-11","page":3,"lane":2,"stage":null,"step":9,"heard":true,"kind":"box","text":"Makes the final proto sample","pct":{"left":77.38,"top":48.84,"width":9.83,"height":11.57}},{"id":"p3-12","page":3,"lane":1,"stage":null,"step":10,"heard":true,"kind":"box","text":"Joins the proto meeting in person or on Zoom, notes the comments, takes photos","pct":{"left":88.68,"top":29.4,"width":9.83,"height":11.57}},{"id":"p3-13","page":3,"lane":0,"stage":null,"step":null,"heard":true,"kind":"box","text":"Designers and developers ask for changes, often many at once","pct":{"left":88.68,"top":9.95,"width":9.83,"height":11.57}},{"id":"p4-1","page":4,"lane":1,"stage":null,"step":1,"heard":true,"kind":"box","text":"Sends the comments and photos to the brand","pct":{"left":9.56,"top":29.4,"width":9.83,"height":11.57}},{"id":"p4-2","page":4,"lane":0,"stage":null,"step":2,"heard":true,"kind":"box","text":"Provides the applications and colours for the line","pct":{"left":20.86,"top":9.95,"width":9.83,"height":11.57}},{"id":"p4-3","page":4,"lane":1,"stage":null,"step":3,"heard":true,"kind":"box","text":"Applies the comments and raises the LA sample request","pct":{"left":32.16,"top":29.4,"width":9.83,"height":11.57}},{"id":"p4-4","page":4,"lane":3,"stage":null,"step":null,"heard":true,"kind":"box","text":"Trims and thread must match the colour. Delays force the closest colour","pct":{"left":32.16,"top":68.29,"width":9.83,"height":11.57}},{"id":"p4-5","page":4,"lane":1,"stage":null,"step":4,"heard":true,"kind":"box","text":"If time is short: available fabric and trims, closest colour from the colour book","pct":{"left":43.47,"top":29.4,"width":9.83,"height":11.57}},{"id":"p4-6","page":4,"lane":2,"stage":null,"step":5,"heard":true,"kind":"box","text":"Make 2 pieces for LA, 1 for critical fit, 4 to 5 for development testing","pct":{"left":54.77,"top":48.84,"width":9.83,"height":11.57}},{"id":"p4-7","page":4,"lane":0,"stage":null,"step":6,"heard":false,"kind":"box","text":"Reviews the LA and critical fit samples, shares comments, selects","pct":{"left":66.07,"top":9.95,"width":9.83,"height":11.57}},{"id":"p4-8","page":4,"lane":2,"stage":null,"step":7,"heard":true,"kind":"box","text":"Development testing runs as a separate path","pct":{"left":77.38,"top":48.84,"width":9.83,"height":11.57}},{"id":"p4-9","page":4,"lane":1,"stage":null,"step":8,"heard":true,"kind":"box","text":"Links the results to the PRR when they come. No waiting","pct":{"left":77.38,"top":29.4,"width":9.83,"height":11.57}},{"id":"p4-10","page":4,"lane":0,"stage":null,"step":9,"heard":true,"kind":"box","text":"Builds a display and a presentation; chooses what to buy","pct":{"left":77.38,"top":9.95,"width":9.83,"height":11.57}},{"id":"p4-11","page":4,"lane":0,"stage":null,"step":10,"heard":true,"kind":"box","text":"Open issue: a missed or late style returns after selection","pct":{"left":88.68,"top":9.95,"width":9.83,"height":11.57}}],"lanes":["Brand","Merchant (us)","Technical and sample team","Suppliers"],"stages":["Tailoring sample","Proto sample","Proto meeting","LA, fit and tests","Selection and placement","Open issue samples"],"pages":{"1":"Journey overview","2":"Tailoring sample","3":"Proto sample and meeting","4":"LA and placement","5":"What changed"}};
 var KEY = 'sample-review-v02';
-var state = {spots:{}, pages:{}, q:{}, qc:{}, overall:'', view:null, lang:'en-GB'};
+var state = {spots:{}, pages:{}, q:{}, qc:{}, overall:'', name:'', view:null, lang:'en-GB'};
 try{ var raw = localStorage.getItem(KEY); if(raw){ var o = JSON.parse(raw); for(var k in o){ state[k] = o[k]; } } }catch(e){}
 var saveT = null;
 function save(){ clearTimeout(saveT); saveT = setTimeout(function(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }, 250); }
@@ -602,33 +626,217 @@ function buildText(){
 }
 function setStatus(msg, warn){ var s = $('status'); s.textContent = msg || ''; s.classList.toggle('warn', !!warn); }
 function links(){
-  var t = $('out').value, enc = encodeURIComponent(t), wa = $('b-wa'), ml = $('b-mail');
-  var longMsg = t.length > 2400;
-  wa.href = 'https://wa.me/?text=' + enc;
-  ml.href = 'mailto:?subject=' + encodeURIComponent('Sample process review: my comments') + '&body=' + enc;
-  wa.setAttribute('aria-disabled', longMsg ? 'true' : 'false'); ml.setAttribute('aria-disabled', t.length > 1800 ? 'true' : 'false');
-  if(longMsg){ setStatus('The message is long, so WhatsApp and email may cut it off. Use Copy, then paste it into your message.', true); } else if(t.length > 1800){ setStatus('The message is too long for an email link. Use WhatsApp or Copy.', true); } else { setStatus(''); }
+  var n = (state.name || '').trim();
+  var body = 'Hello,\n\nMy review of the sample process (draft v0.2) is attached as a PDF.\n\nRegards' + (n ? '\n' + n : '');
+  $('b-mail').href = 'mailto:?subject=' + encodeURIComponent('Sample process review: my comments') + '&body=' + encodeURIComponent(body);
 }
 function rebuild(){ if(dirty) return; $('out').value = buildText(); links(); }
 $('out').addEventListener('input', function(){ dirty = true; links(); });
 $('b-refresh').addEventListener('click', function(){ dirty = false; rebuild(); setStatus('Message rebuilt from your answers.'); });
 $('b-copy').addEventListener('click', function(){
   var t = $('out').value;
-  function fallback(){ var o = $('out'); o.focus(); o.select(); var okc = false; try{ okc = document.execCommand('copy'); }catch(e){} setStatus(okc ? 'Copied. Paste it into WhatsApp or an email.' : 'Select the text above and copy it.', !okc); }
-  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ setStatus('Copied. Paste it into WhatsApp or an email.'); }, fallback); } else { fallback(); }
+  function fallback(){ var o = $('out'); o.focus(); o.select(); var okc = false; try{ okc = document.execCommand('copy'); }catch(e){} setStatus(okc ? 'Copied. Paste it into an email.' : 'Select the text above and copy it.', !okc); }
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ setStatus('Copied. Paste it into an email.'); }, fallback); } else { fallback(); }
 });
-if(navigator.share){
-  $('b-share').hidden = false;
-  $('b-share').addEventListener('click', function(){ navigator.share({title:'Sample process review: my comments', text: $('out').value}).catch(function(){}); });
+/* ---------- the PDF (built here, no outside libraries) ---------- */
+$('nm').value = state.name || '';
+$('nm').addEventListener('input', function(){ state.name = this.value; save(); links(); });
+
+var HW = [278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
+var HB = [278,333,474,556,556,889,722,238,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,333,333,584,584,584,611,975,722,722,722,722,667,611,778,722,278,556,722,611,833,722,778,667,778,722,667,611,722,667,944,667,667,611,333,278,333,584,556,333,556,611,556,611,556,333,611,611,278,278,556,278,889,611,611,611,611,389,556,333,611,556,778,556,556,500,389,280,389,584];
+var WIN = {8364:0x80, 8230:0x85, 8216:0x91, 8217:0x92, 8220:0x93, 8221:0x94, 8226:0x95, 8211:0x96, 8212:0x97, 8482:0x99};
+function enc(ch){ var c = ch.charCodeAt(0); if(c === 9){ return 32; } if(c >= 32 && c < 127){ return c; } if(c >= 160 && c <= 255){ return c; } return WIN[c] === undefined ? -1 : WIN[c]; }
+function plainOk(t){ for(var i = 0; i < t.length; i++){ var c = t.charCodeAt(i); if(c === 10 || c === 13){ continue; } if(enc(t.charAt(i)) < 0){ return false; } } return true; }
+function cw(code, bold){
+  if(code >= 32 && code <= 126){ return (bold ? HB : HW)[code - 32]; }
+  if(code === 0x85 || code === 0x97){ return 1000; } if(code === 0x96){ return 556; }
+  if(code === 0x91 || code === 0x92){ return bold ? 278 : 222; } if(code === 0x93 || code === 0x94){ return bold ? 500 : 333; }
+  if(code === 0x95){ return 350; } return 556;
 }
+function tw(str, size, bold){ var w = 0; for(var i = 0; i < str.length; i++){ var c = enc(str.charAt(i)); w += cw(c < 0 ? 63 : c, bold); } return w * size / 1000; }
+function wrap(text, size, bold, width){
+  var out = [];
+  text.replace(/\r/g, '').split('\n').forEach(function(par){
+    var words = par.split(/\s+/).filter(Boolean), line = '';
+    if(!words.length){ out.push(''); return; }
+    words.forEach(function(w){
+      var t = line ? line + ' ' + w : w;
+      if(tw(t, size, bold) <= width){ line = t; return; }
+      if(line){ out.push(line); line = ''; }
+      while(tw(w, size, bold) > width && w.length > 1){ var k = w.length; while(k > 1 && tw(w.slice(0, k), size, bold) > width){ k--; } out.push(w.slice(0, k)); w = w.slice(k); }
+      line = w;
+    });
+    out.push(line);
+  });
+  return out;
+}
+function lit(str){
+  var o = '(';
+  for(var i = 0; i < str.length; i++){
+    var c = enc(str.charAt(i)); if(c < 0){ c = 63; }
+    if(c === 40 || c === 41 || c === 92){ o += '\\' + String.fromCharCode(c); }
+    else if(c < 32 || c > 126){ o += '\\' + ('00' + c.toString(8)).slice(-3); }
+    else { o += String.fromCharCode(c); }
+  }
+  return o + ')';
+}
+function buildPdf(){
+  var W = 595.28, H = 841.89, M = 54, CW = W - 2 * M, BOT = 56;
+  var pages = [], pg = null, y = 0, imgs = [];
+  function fmt(n){ return String(Math.round(n * 100) / 100); }
+  function addPage(){ pg = {ops: [], im: []}; pages.push(pg); y = H - M; }
+  function room(h){ if(y - h < BOT){ addPage(); } }
+  function textLine(str, x, size, bold, rgb){ pg.ops.push('BT ' + rgb + ' rg /' + (bold ? 'F2' : 'F1') + ' ' + size + ' Tf ' + fmt(x) + ' ' + fmt(y) + ' Td ' + lit(str) + ' Tj ET'); }
+  /* text the standard PDF font cannot draw (for example Sinhala) is drawn by the browser and placed as a picture */
+  function imgPara(text, o, width){
+    var size = o.size || 10, bold = !!o.bold, S = 3, lead = size * 1.38;
+    var c = document.createElement('canvas'), ctx = c.getContext('2d');
+    var font = (bold ? 'bold ' : '') + (size * S) + 'px "Segoe UI", "Noto Sans", "Noto Sans Sinhala", "Iskoola Pota", "Nirmala UI", Arial, sans-serif';
+    ctx.font = font;
+    var maxw = Math.ceil(width * S), lines = [];
+    text.replace(/\r/g, '').split('\n').forEach(function(par){
+      var words = par.split(/\s+/).filter(Boolean), line = '';
+      if(!words.length){ lines.push(''); return; }
+      words.forEach(function(w){ var t = line ? line + ' ' + w : w; if(!line || ctx.measureText(t).width <= maxw){ line = t; } else { lines.push(line); line = w; } });
+      lines.push(line);
+    });
+    for(var i = 0; i < lines.length; i += 8){
+      var chunk = lines.slice(i, i + 8), hh = chunk.length * lead;
+      c.width = maxw; c.height = Math.ceil(hh * S);
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.fillStyle = '#1a1a1f'; ctx.font = font; ctx.textBaseline = 'alphabetic';
+      chunk.forEach(function(ln, k){ ctx.fillText(ln, 0, (k * lead + size * 1.05) * S); });
+      var data = atob(c.toDataURL('image/jpeg', 0.92).split(',')[1]), bytes = new Uint8Array(data.length);
+      for(var j = 0; j < data.length; j++){ bytes[j] = data.charCodeAt(j); }
+      room(hh);
+      imgs.push({w: c.width, h: c.height, bytes: bytes});
+      pg.im.push({n: imgs.length, x: M + (o.indent || 0), y: y - hh, w: c.width / S, h: c.height / S});
+      y -= hh;
+    }
+  }
+  function para(text, o){
+    o = o || {};
+    var size = o.size || 10, bold = !!o.bold, ind = o.indent || 0, rgb = o.rgb || '0.1 0.1 0.12', lead = size * 1.38, width = (CW - ind) * 0.985;
+    if(plainOk(text)){
+      wrap(text, size, bold, width).forEach(function(ln){ room(lead); y -= size; if(ln){ textLine(ln, M + ind, size, bold, rgb); } y -= lead - size; });
+    } else { imgPara(text, o, width); }
+    y -= (o.after === undefined ? 4 : o.after);
+  }
+  function rule(){ room(8); pg.ops.push('0.82 0.84 0.88 RG 0.6 w ' + fmt(M) + ' ' + fmt(y - 2) + ' m ' + fmt(W - M) + ' ' + fmt(y - 2) + ' l S'); y -= 8; }
+  function h2(t){ y -= 8; room(44); para(t, {size: 12.5, bold: true, rgb: '0.05 0.2 0.45', after: 2}); rule(); }
+  var MUTED = '0.4 0.42 0.47';
+
+  /* ----- gather the answers ----- */
+  var chg = [], notes = [], okn = [], okCount = {}, okTotal = 0;
+  [1,2,3,4].forEach(function(p){ ordered(p).forEach(function(id){
+    var v = state.spots[id]; if(!v) return; var s = byId[id], c = (v.c || '').trim();
+    if(v.s === 'chg'){ chg.push([s, c]); }
+    else if(v.s === 'ok'){ okCount[p] = (okCount[p] || 0) + 1; okTotal++; if(c){ okn.push([s, c]); } }
+    else if(c){ notes.push([s, c]); }
+  }); });
+  var ov = (state.overall || '').trim(), nm = (state.name || '').trim();
+  var pgl = []; [1,2,3,4,5].forEach(function(p){ var st = state.pages[p] || {}, c = (st.c || '').trim(); if(st.ok || c){ pgl.push([p, st.ok, c]); } });
+  var date = new Date().toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric'});
+
+  /* ----- lay it out ----- */
+  addPage();
+  para('Sample process review: comments', {size: 20, bold: true, rgb: '0.05 0.2 0.45', after: 2});
+  para('Review of the sample process diagram, draft v0.2', {size: 10.5, rgb: MUTED, after: 6});
+  para('From: ' + (nm || 'Not given') + '  \u00b7  Date: ' + date, {size: 10.5, bold: true, after: 6});
+  para('Boxes marked right: ' + okTotal + ' of ' + DATA.spots.length + '. Needing a change: ' + chg.length + '. Other notes: ' + notes.length + '.', {size: 10, rgb: MUTED, after: 6});
+  if(ov){ h2('Overall comments'); para(ov); }
+  if(chg.length){ h2('Needs a change (' + chg.length + ')'); chg.forEach(function(it, i){
+    para((i + 1) + '.  ' + whereOf(it[0]), {bold: true, after: 1});
+    para('Box: ' + it[0].text, {size: 9.5, rgb: MUTED, indent: 14, after: 1});
+    para('Change: ' + (it[1] || '(no note added)'), {indent: 14, after: 8});
+  }); }
+  if(notes.length){ h2('Notes on boxes (' + notes.length + ')'); notes.forEach(function(it, i){
+    para((i + 1) + '.  ' + whereOf(it[0]), {bold: true, after: 1});
+    para('Box: ' + it[0].text, {size: 9.5, rgb: MUTED, indent: 14, after: 1});
+    para('Note: ' + it[1], {indent: 14, after: 8});
+  }); }
+  if(pgl.length){ h2('Comments on each page'); pgl.forEach(function(it){
+    para(DATA.pages[it[0]] + (it[1] ? ' (marked: the whole page looks right)' : ''), {bold: true, after: 1});
+    if(it[2]){ para(it[2], {indent: 14, after: 7}); } else { y -= 5; }
+  }); }
+  h2('Answers to the questions');
+  QUESTIONS.forEach(function(q, i){
+    var a = [state.qc[i] || '', (state.q[i] || '').trim()].filter(Boolean).join('. ');
+    para('Q' + (i + 1) + '.  ' + q.t + (q.key ? '   (key question)' : ''), {bold: true, after: 1});
+    para(q.c, {size: 9.5, rgb: MUTED, indent: 14, after: 1});
+    para('Answer: ' + (a || 'Not answered'), {indent: 14, after: 8});
+  });
+  if(okTotal){ h2('Marked as right (' + okTotal + ')');
+    [1,2,3,4].forEach(function(p){ if(okCount[p]){ para(DATA.pages[p] + ': ' + okCount[p] + ' of ' + pageIds[p].length + ' boxes', {after: 2}); } });
+    okn.forEach(function(it){ para(whereOf(it[0]) + ': ' + it[1], {size: 9.5, indent: 14, after: 3}); });
+  }
+  if(!okTotal && !chg.length && !notes.length && !ov && !pgl.length){ para('Nothing has been marked or written on the diagram pages yet.', {rgb: MUTED}); }
+  pages.forEach(function(p, i){ pg = p; y = 30; var t = 'Sample process review, draft v0.2   ·   Page ' + (i + 1) + ' of ' + pages.length; p.ops.push('BT 0.5 0.5 0.55 rg /F1 8 Tf ' + fmt(M) + ' 28 Td ' + lit(t) + ' Tj ET'); });
+
+  /* ----- write the file ----- */
+  var parts = [], off = 0, offsets = [];
+  function put(x){ var b; if(typeof x === 'string'){ b = new Uint8Array(x.length); for(var i = 0; i < x.length; i++){ b[i] = x.charCodeAt(i) & 255; } } else { b = x; } parts.push(b); off += b.length; }
+  function obj(n, body){ offsets[n] = off; put(n + ' 0 obj\n' + body + '\nendobj\n'); }
+  var imgBase = 6, pageBase = imgBase + imgs.length, total = pageBase + 2 * pages.length;
+  put('%PDF-1.4\n%âãÏÓ\n');
+  var kids = pages.map(function(p, i){ return (pageBase + 2 * i + 1) + ' 0 R'; }).join(' ');
+  obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
+  obj(2, '<< /Type /Pages /Kids [' + kids + '] /Count ' + pages.length + ' >>');
+  obj(3, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+  obj(4, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+  obj(5, '<< /Title (Sample process review: comments) /Producer (Sample process review page) >>');
+  imgs.forEach(function(im, i){
+    offsets[imgBase + i] = off;
+    put((imgBase + i) + ' 0 obj\n<< /Type /XObject /Subtype /Image /Width ' + im.w + ' /Height ' + im.h + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + im.bytes.length + ' >>\nstream\n');
+    put(im.bytes); put('\nendstream\nendobj\n');
+  });
+  pages.forEach(function(p, i){
+    var ops = p.ops.slice();
+    p.im.forEach(function(m){ ops.push('q ' + fmt(m.w) + ' 0 0 ' + fmt(m.h) + ' ' + fmt(m.x) + ' ' + fmt(m.y) + ' cm /Im' + m.n + ' Do Q'); });
+    var stream = ops.join('\n'), cn = pageBase + 2 * i;
+    obj(cn, '<< /Length ' + stream.length + ' >>\nstream\n' + stream + '\nendstream');
+    var xo = p.im.map(function(m){ return '/Im' + m.n + ' ' + (imgBase + m.n - 1) + ' 0 R'; }).join(' ');
+    obj(cn + 1, '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + W + ' ' + H + '] /Resources << /Font << /F1 3 0 R /F2 4 0 R >>' + (xo ? ' /XObject << ' + xo + ' >>' : '') + ' >> /Contents ' + cn + ' 0 R >>');
+  });
+  var xref = off, x = 'xref\n0 ' + total + '\n0000000000 65535 f \n';
+  for(var n = 1; n < total; n++){ x += ('0000000000' + offsets[n]).slice(-10) + ' 00000 n \n'; }
+  put(x + 'trailer\n<< /Size ' + total + ' /Root 1 0 R /Info 5 0 R >>\nstartxref\n' + xref + '\n%%EOF\n');
+  return new Blob(parts, {type: 'application/pdf'});
+}
+function pad2(n){ return (n < 10 ? '0' : '') + n; }
+function pdfName(){
+  var d = new Date(), n = (state.name || '').trim().replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  return 'Sample-process-review-comments' + (n ? '-' + n : '') + '-' + d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + '.pdf';
+}
+$('b-pdf').addEventListener('click', function(){
+  var blob, name = pdfName();
+  try{ blob = buildPdf(); }catch(e){ setStatus('The PDF could not be built here. Use Copy text below and paste it into your email.', true); return; }
+  var url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
+  setStatus('Saved as ' + name + '. Look in your Downloads folder. Next, tap Open email and attach it.');
+});
+(function(){
+  var ok = false;
+  try{ ok = !!(navigator.canShare && navigator.canShare({files: [new File(['x'], 'a.pdf', {type: 'application/pdf'})]})); }catch(e){}
+  if(!ok) return;
+  var b = $('b-share'); b.hidden = false;
+  b.addEventListener('click', function(){
+    var file;
+    try{ file = new File([buildPdf()], pdfName(), {type: 'application/pdf'}); }catch(e){ setStatus('The PDF could not be built here. Use Copy text below and paste it into your email.', true); return; }
+    setStatus('Choose Mail or Gmail in the list, then add Krish’s address and send.');
+    navigator.share({files: [file], title: 'Sample process review: comments', text: 'My review of the sample process is attached.'}).catch(function(e){ if(e && e.name !== 'AbortError'){ setStatus('Sharing did not work here. Tap Save PDF instead.', true); } });
+  });
+})();
+
 var clearArmed = false;
 $('b-clear').addEventListener('click', function(){
   var b = this;
   if(!clearArmed){ clearArmed = true; b.textContent = 'Tap again to clear everything'; setTimeout(function(){ clearArmed = false; b.textContent = 'Clear everything on this device'; }, 4000); return; }
   try{ localStorage.removeItem(KEY); }catch(e){}
-  state = {spots:{}, pages:{}, q:{}, qc:{}, overall:'', view:state.view, lang:state.lang};
+  state = {spots:{}, pages:{}, q:{}, qc:{}, overall:'', name:'', view:state.view, lang:state.lang};
   document.querySelectorAll('.chipb').forEach(function(x){ x.setAttribute('aria-pressed','false'); });
-  document.querySelectorAll('textarea').forEach(function(t){ if(t.id !== 'out') t.value = ''; });
+  document.querySelectorAll('textarea').forEach(function(t){ if(t.id !== 'out') t.value = ''; }); $('nm').value = '';
   document.querySelectorAll('input[type=checkbox]').forEach(function(c){ c.checked = false; });
   paintAll(); dirty = false; rebuild(); closeSheet(); clearArmed = false; b.textContent = 'Clear everything on this device'; setStatus('Cleared.');
 });
