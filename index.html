@@ -208,7 +208,7 @@ body.nomic .langrow{display:none}
 <header class="top">
   <div class="wrap">
     <div class="top-row">
-      <div class="brand"><b>Sample process review</b><span>Draft v0.2, from Krish</span></div>
+      <div class="brand"><b>Sample process review</b><span>Draft v0.2, from the Melbourne team</span></div>
       <span class="count" id="count">Nothing reviewed yet</span>
       <a class="btn primary" href="#send">Finish and save</a>
     </div>
@@ -227,7 +227,7 @@ body.nomic .langrow{display:none}
 <main class="wrap">
   <div class="intro">
     <h1>Is this how the sample process really works?</h1>
-    <p>This is the sample process as we understood it from our conversations. Please correct anything that is wrong. Tap a box to mark it right or note a change, or just talk in the box below. Your answers stay on this device. At the end you save them as a PDF and email it to me.</p>
+    <p>This is the sample process as we understood it from our conversations. Please correct anything that is wrong. Tap a box to mark it right or note a change, or just talk in the box below. Your answers stay on this device. At the end you save them as a PDF and email it to the Melbourne team.</p>
     <div class="how"><span><i class="sw"></i>Described in our conversations</span><span><i class="sw guess"></i>Our guess, please check</span></div>
     <div class="quick" id="quick">
       <h2>Short on time? Just talk.</h2>
@@ -343,8 +343,8 @@ body.nomic .langrow{display:none}
         </div>
       </div>
       <div class="sendstep">
-        <h3><span class="num">2</span>Email the PDF to Krish</h3>
-        <p class="cap" style="margin:0">Open your email, attach the PDF you just saved (find it in your Downloads folder) and send it to Krish.</p>
+        <h3><span class="num">2</span>Email the PDF to the Melbourne team</h3>
+        <p class="cap" style="margin:0">Open your email, attach the PDF you just saved (find it in your Downloads folder) and send it to the Melbourne team.</p>
       </div>
       <p class="status" id="status" role="status" aria-live="polite"></p>
       <p class="cap" style="margin:0">If the PDF does not save, open this page in Chrome or Safari and try again.</p>
@@ -818,7 +818,7 @@ $('b-pdf').addEventListener('click', function(){
   var url = URL.createObjectURL(blob), a = document.createElement('a');
   a.href = url; a.download = name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
   setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
-  setStatus('Saved as ' + name + '. Look in your Downloads folder. Next, email that PDF to Krish.');
+  setStatus('Saved as ' + name + '. Look in your Downloads folder. Next, email that PDF to the Melbourne team.');
 });
 (function(){
   var ok = false;
@@ -828,7 +828,7 @@ $('b-pdf').addEventListener('click', function(){
   b.addEventListener('click', function(){
     var file;
     try{ file = new File([buildPdf()], pdfName(), {type: 'application/pdf'}); }catch(e){ setStatus('The PDF could not be built here. Open this page in Chrome or Safari and try again.', true); return; }
-    setStatus('Choose Mail or Gmail in the list, then add Krish’s address and send.');
+    setStatus('Choose Mail or Gmail in the list, then add the team’s address and send.');
     navigator.share({files: [file], title: 'Sample process review: comments', text: 'My review of the sample process is attached.'}).catch(function(e){ if(e && e.name !== 'AbortError'){ setStatus('Sharing did not work here. Tap Save PDF instead.', true); } });
   });
 })();
