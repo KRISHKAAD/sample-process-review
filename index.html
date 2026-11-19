@@ -388,6 +388,7 @@ var DATA = {"spots":[{"id":"p1-1","page":1,"lane":0,"stage":0,"step":null,"heard
 var KEY = 'sample-review-v02';
 var state = {spots:{}, pages:{}, q:{}, qc:{}, overall:'', name:'', view:null, lang:'en-GB'};
 try{ var raw = localStorage.getItem(KEY); if(raw){ var o = JSON.parse(raw); for(var k in o){ state[k] = o[k]; } } }catch(e){}
+state.view = null; /* every visit opens on the diagram; the Diagram / List switch only lasts for that visit */
 var saveT = null;
 function save(){ clearTimeout(saveT); saveT = setTimeout(function(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }, 250); }
 function $(id){ return document.getElementById(id); }
@@ -521,7 +522,7 @@ document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !shee
 /* ---------- view toggle ---------- */
 var mq = window.matchMedia ? window.matchMedia('(max-width: 719px)') : {matches:false};
 function applyView(){
-  var v = state.view || (mq.matches ? 'list' : 'diagram');
+  var v = state.view || 'diagram';
   document.body.classList.toggle('view-list', v === 'list');
   document.querySelectorAll('.seg button').forEach(function(b){ b.setAttribute('aria-pressed', b.dataset.view === v ? 'true' : 'false'); });
 }
