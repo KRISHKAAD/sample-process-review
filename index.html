@@ -210,7 +210,7 @@ body.nomic .langrow{display:none}
     <div class="top-row">
       <div class="brand"><b>Sample process review</b><span>Draft v0.2, from Krish</span></div>
       <span class="count" id="count">Nothing reviewed yet</span>
-      <a class="btn primary" href="#send">Save and send</a>
+      <a class="btn primary" href="#send">Finish and save</a>
     </div>
     <nav class="nav" id="nav" aria-label="Sections">
       <a href="#journey">Journey</a>
@@ -219,7 +219,7 @@ body.nomic .langrow{display:none}
       <a href="#la">LA and placement</a>
       <a href="#changes">What changed</a>
       <a href="#questions">Questions</a>
-      <a href="#send">Send</a>
+      <a href="#send">Finish</a>
     </nav>
   </div>
 </header>
@@ -329,9 +329,9 @@ body.nomic .langrow{display:none}
 
   <section id="send">
     <div class="eyebrow" style="color:var(--s6)">Last step</div>
-    <h2>Save and send your review</h2>
+    <h2>Save your review as a PDF</h2>
     <div class="send">
-      <p class="cap">Everything you marked, typed or said is collected into one PDF, including what you said at the top of the page. Save the PDF, then attach it to an email to Krish. Nothing is sent from this page.</p>
+      <p class="cap">Everything you marked, typed or said is collected into one PDF, including what you said at the top of the page. Nothing is sent from this page.</p>
       <div class="sendstep">
         <label class="lab" for="nm">Your name (shown on the PDF, optional)</label>
         <input id="nm" type="text" autocomplete="name" placeholder="Your name">
@@ -340,25 +340,28 @@ body.nomic .langrow{display:none}
         <h3><span class="num">1</span>Save the PDF</h3>
         <div class="send-actions">
           <button type="button" class="btn primary" id="b-pdf">Save PDF</button>
-          <button type="button" class="btn primary" id="b-share" hidden>Share PDF (choose Mail)</button>
         </div>
       </div>
       <div class="sendstep">
-        <h3><span class="num">2</span>Email it to Krish</h3>
-        <p class="cap" style="margin:0">Your email app opens with a short message. Attach the PDF you just saved, add Krish's address and send.</p>
-        <div class="send-actions"><a class="btn" id="b-mail" href="#send">Open email</a></div>
+        <h3><span class="num">2</span>Email the PDF to Krish</h3>
+        <p class="cap" style="margin:0">Open your email, attach the PDF you just saved (find it in your Downloads folder) and send it to Krish.</p>
       </div>
       <p class="status" id="status" role="status" aria-live="polite"></p>
-      <p class="cap" style="margin:0">If the PDF does not save, open this page in Chrome or Safari and try again, or use Copy text below and paste it into your email.</p>
-      <details class="more">
-        <summary>See or copy the text version</summary>
-        <label class="lab" for="out">Your message</label>
-        <textarea id="out" rows="14" spellcheck="false"></textarea>
-        <div class="send-actions">
-          <button type="button" class="btn" id="b-copy">Copy text</button>
-          <button type="button" class="btn" id="b-refresh">Rebuild from my answers</button>
-        </div>
-      </details>
+      <p class="cap" style="margin:0">If the PDF does not save, open this page in Chrome or Safari and try again.</p>
+      <!-- kept for later, hidden for now: phone share sheet, email link, text version -->
+      <div id="spare-tools" hidden style="display:none">
+        <button type="button" class="btn primary" id="b-share" hidden>Share PDF (choose Mail)</button>
+        <a class="btn" id="b-mail" href="#send">Open email</a>
+        <details class="more">
+          <summary>See or copy the text version</summary>
+          <label class="lab" for="out">Your message</label>
+          <textarea id="out" rows="14" spellcheck="false"></textarea>
+          <div class="send-actions">
+            <button type="button" class="btn" id="b-copy">Copy text</button>
+            <button type="button" class="btn" id="b-refresh">Rebuild from my answers</button>
+          </div>
+        </details>
+      </div>
       <div><button type="button" class="btn" id="b-clear">Clear everything on this device</button></div>
     </div>
   </section>
@@ -810,11 +813,11 @@ function pdfName(){
 }
 $('b-pdf').addEventListener('click', function(){
   var blob, name = pdfName();
-  try{ blob = buildPdf(); }catch(e){ setStatus('The PDF could not be built here. Use Copy text below and paste it into your email.', true); return; }
+  try{ blob = buildPdf(); }catch(e){ setStatus('The PDF could not be built here. Open this page in Chrome or Safari and try again.', true); return; }
   var url = URL.createObjectURL(blob), a = document.createElement('a');
   a.href = url; a.download = name; document.body.appendChild(a); a.click(); document.body.removeChild(a);
   setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
-  setStatus('Saved as ' + name + '. Look in your Downloads folder. Next, tap Open email and attach it.');
+  setStatus('Saved as ' + name + '. Look in your Downloads folder. Next, email that PDF to Krish.');
 });
 (function(){
   var ok = false;
@@ -823,7 +826,7 @@ $('b-pdf').addEventListener('click', function(){
   var b = $('b-share'); b.hidden = false;
   b.addEventListener('click', function(){
     var file;
-    try{ file = new File([buildPdf()], pdfName(), {type: 'application/pdf'}); }catch(e){ setStatus('The PDF could not be built here. Use Copy text below and paste it into your email.', true); return; }
+    try{ file = new File([buildPdf()], pdfName(), {type: 'application/pdf'}); }catch(e){ setStatus('The PDF could not be built here. Open this page in Chrome or Safari and try again.', true); return; }
     setStatus('Choose Mail or Gmail in the list, then add Krish’s address and send.');
     navigator.share({files: [file], title: 'Sample process review: comments', text: 'My review of the sample process is attached.'}).catch(function(e){ if(e && e.name !== 'AbortError'){ setStatus('Sharing did not work here. Tap Save PDF instead.', true); } });
   });
